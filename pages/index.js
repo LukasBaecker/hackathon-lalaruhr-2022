@@ -27,6 +27,20 @@ export default function Home() {
         generateTransaction: true,
       }
     );
+
+    console.log(res);
+  };
+  const tryAnotherRound = async () => {
+    const res = await axios.put(
+      "http://192.168.137.1:30010/remote/object/call",
+      {
+        objectPath:
+          "/Game/VRTemplate/Maps/VRTemplateMap.VRTemplateMap:PersistentLevel.Function1_C_9",
+        functionName: "fuck3",
+        parameters: { color: 1 },
+        generateTransaction: true,
+      }
+    );
     console.log(res);
   };
   return (
@@ -43,6 +57,7 @@ export default function Home() {
         </h1>
         <button onClick={tryAPI}>Try out the Unreal API</button>
         <button onClick={tryAPIONOFF}>Turn off and on</button>
+        <button onClick={tryAnotherRound}>Change the color</button>
         <p className={styles.description}>
           Get started by editing{" "}
           <code className={styles.code}>pages/index.js</code>
