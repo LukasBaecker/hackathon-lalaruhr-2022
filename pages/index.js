@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.scss";
 import axios from "axios";
-import useLongPress from "./hooks/useLongpress";
+import useLongPress from "../useLongPress";
 
 export default function Home() {
   const setNewUser = async () => {
