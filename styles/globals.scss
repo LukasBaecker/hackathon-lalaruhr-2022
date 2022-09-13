@@ -1,5 +1,15 @@
 @import "./colors";
 
+// change the default bootstrap theme
+$theme-colors: (
+  "primary": $yellow_lala,
+  "secondary": $green_lala,
+  "danger": $orange_lala,
+  "warning": $blue_lala,
+);
+
+// Import Bootstrap and its default variables
+@import "~bootstrap/scss/bootstrap.scss";
 html,
 body {
   overflow: hidden;
@@ -9,13 +19,15 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 h1 {
-  color: $yellow_lala;
+  color: $purple_lala;
 }
 a {
   color: inherit;
   text-decoration: none;
 }
-
+h2 {
+  color: $purple-lala;
+}
 * {
   box-sizing: border-box;
 }

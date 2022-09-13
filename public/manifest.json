@@ -1,32 +1,32 @@
 {
-    "theme_color": "#ffed00",
-    "background_color": "#ffffff",
-    "display": "standalone",
-    "scope": "/",
-    "start_url": "https://magenta-cupcake-b133d5.netlify.app/",
-    "name": "Lukas B\u00e4cker",
-    "short_name": "baker",
-    "description": "This webapp is for the Biennale 2022 of lala.ruhr. The app is only used for local network controlling a VR",
-    "icons": [
-        {
-            "src": "/icon-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/icon-256x256.png",
-            "sizes": "256x256",
-            "type": "image/png"
-        },
-        {
-            "src": "/icon-384x384.png",
-            "sizes": "384x384",
-            "type": "image/png"
-        },
-        {
-            "src": "/icon-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "theme_color": "#ffed00",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "https://magenta-cupcake-b133d5.netlify.app/",
+  "name": "VR Controller for Biennale 2022",
+  "short_name": "VR Controller",
+  "description": "This webapp is for the Biennale 2022 of lala.ruhr. The app is only used for local network controlling a VR",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
