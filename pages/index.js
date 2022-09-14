@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.scss";
@@ -20,16 +20,23 @@ export default function Home() {
   const [changeTimeout, setChangeTimeout] = useState(0);
   const timeoutValue = 60; //this variable can be changed to set the value in seconds, how long a timeout till the next possible action should be
 
-  const resetDashboard = () => {};
+  useEffect(() => {
+    changeTimeout > 0 &&
+      setTimeout(() => setChangeTimeout(changeTimeout - 1), 1000);
+  }, [changeTimeout]);
+
   //function to reset the dashboard for a new user. The window for tipping in a name will appear
   const setNewUser = async () => {
     console.log("game has beeing reseted");
     setShowWantToReset(true);
   };
+
   //when pushing the reset button just short, nothing would happen
   const doNothing = () => {
     console.log("nothing done");
   };
+
+  //a function to change a value in the VR
   const tryAPI = async () => {
     setChangeTimeout(timeoutValue);
     const res = await axios.put(
@@ -106,6 +113,7 @@ export default function Home() {
                     onSubmit={(values, { setSubmitting, resetForm }) => {
                       setSubmitting(true);
                       if (values.name === "") {
+                        setSubmitting(false);
                       } else {
                         setCurrentUser(values.name);
                       }
@@ -122,7 +130,7 @@ export default function Home() {
                     }) => (
                       <Form onSubmit={handleSubmit} className='mx-auto'>
                         <Form.Group className='form-group' controlId='formName'>
-                          <Form.Label>Name:</Form.Label>
+                          <Form.Label>Name</Form.Label>
                           <Form.Control
                             type='text'
                             name='name'
@@ -189,7 +197,7 @@ export default function Home() {
               </Row>
               <Row>
                 <Col></Col>
-                <Col>2 of 3</Col>
+                <Col>Countdown: {changeTimeout}</Col>
                 <Col>3 of 3</Col>
               </Row>
             </Container>
