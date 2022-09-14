@@ -3,12 +3,13 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../styles/Home.module.scss";
-import { Container, Row, Card } from "react-bootstrap";
+import { Container, Row, Card, Modal } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import { gql, useQuery } from "@apollo/client";
 import Lightbox from "react-18-image-lightbox";
 import "react-18-image-lightbox/style.css";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { DiscussionEmbed, CommentCount } from 'disqus-react';
 
 // graphql api client
 const client = new ApolloClient({
@@ -37,6 +38,49 @@ const ImageLightbox = ({ url, className }) => {
   );
 };
 
+// disqus modal
+const DisqusModal = ({
+  disqusModalOpen,
+  setDisqusModalOpen,
+  disqusModalPayload
+}) => {
+  return (
+    <Modal
+      show={disqusModalOpen}
+      onHide={() => setDisqusModalOpen(false)}
+      style={{ padding: 0, borderRadius: "10px" }}>
+      <Card>
+        <ImageLightbox
+          url={disqusModalPayload.url}
+          className="responsive border-0 card-img-top" />
+      </Card>
+      <Modal.Body>
+
+        {/* <div className="text-normal mt-0 pt-0" style={{ whiteSpace: 'pre-wrap' }}>
+          <p>{disqusModalPayload.title}</p>
+        </div> */}
+
+        <DiscussionEmbed
+          shortname='gruenaufkumpelin'
+          config={
+            {
+              url: disqusModalPayload.url,
+              identifier: disqusModalPayload.identifier,
+              title: disqusModalPayload.title,
+            }
+          }
+        />
+
+        <div className="text-center mt-3">
+          <button className="btn btn-outline-primary" onClick={() => setDisqusModalOpen(false)}>
+            Close
+          </button>
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+}
+
 // query
 const ALL_SCREENSHOTS_QUERY = gql`
   query allScreenshots {
@@ -56,10 +100,19 @@ const ALL_SCREENSHOTS_QUERY = gql`
 
 // whole page component
 export default function Home() {
+  // query
   const { loading, data } = useQuery(ALL_SCREENSHOTS_QUERY, {
     client: client,
     pollInterval: 3000,
+    fetchPolicy: 'network-only',
+    onCompleted: () => console.log('called'),
+    fetchPolicy: 'no-cache',
   });
+
+  // disqus modal open/closed
+  const [disqusModalOpen, setDisqusModalOpen] = useState(false);
+  const [disqusModalPayload, setDisqusModalPayload] = useState({});
+
 
   if (loading) {
     return <div></div>;
@@ -104,12 +157,39 @@ export default function Home() {
                       minute: "numeric",
                     }).format(new Date(singleScreenshot.attributes.createdAt))}
                   </div>
+<Link legacyBehavior={false} href="#" onClick={() => {
+                      setDisqusModalOpen(true);
+                      setDisqusModalPayload({
+                        url: singleScreenshot.attributes.url,
+                        identifier: singleScreenshot.attributes.url,
+                        title: singleScreenshot.attributes.authorName,
+                      });
+                    }}>
+                      <CommentCount
+                        shortname='gruenaufkumpelin'
+                        config={
+                          {
+                            url: singleScreenshot.attributes.url,
+                            identifier: singleScreenshot.attributes.url,
+                            title: singleScreenshot.attributes.authorName,
+                          }
+                        }
+                      >
+                        {/* Placeholder Text */}
+                        Comments
+                      </CommentCount>
+                    </Link>
                 </Card.Body>
               </Card>
             </Col>
           ))}
         </Row>
       </Container>
+      <DisqusModal
+        disqusModalOpen={disqusModalOpen}
+        setDisqusModalOpen={setDisqusModalOpen}
+        disqusModalPayload={disqusModalPayload}
+      />
     </div>
   );
 }
