@@ -11,14 +11,6 @@
   background-size: cover;
 }
 
-.gallery {
-  background-image: url("/2022-04-26_lala-Biennale_header-13-neu.png");
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-attachment: scroll;
-  background-size: cover;
-}
-
 .main {
   height: 100%;
   padding: 20px 0;
@@ -140,4 +132,18 @@
 .nameForm {
   text-align: center;
   margin-top: 10%;
+}
+
+.gallery {
+  h1 {
+    color: $yellow_lala;
+    margin-bottom: 30px;
+  }
+  background-image: url("/2022-04-26_lala-Biennale_header-14-neu.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-attachment: scroll;
+  background-size: cover;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
