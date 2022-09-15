@@ -16,8 +16,13 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import CircularSlider from "@fseehawer/react-circular-slider";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
 import Slider from "rc-slider";
-import { gql, useQuery, useMutation, ApolloClient, InMemoryCache } from "@apollo/client";
-
+import {
+  gql,
+  useQuery,
+  useMutation,
+  ApolloClient,
+  InMemoryCache,
+} from "@apollo/client";
 
 // graphql api client
 const client = new ApolloClient({
@@ -28,9 +33,7 @@ const client = new ApolloClient({
 // mutation to send a message
 const SEND_MESSAGE_MUTATION = gql`
   mutation sendMessage($message: String) {
-    createMessage(data:{
-      messageText: $message
-    }){
+    createMessage(data: { messageText: $message }) {
       data {
         id
       }
@@ -40,7 +43,7 @@ const SEND_MESSAGE_MUTATION = gql`
 
 export default function Home() {
   const [sendMessage] = useMutation(SEND_MESSAGE_MUTATION, {
-    client: client
+    client: client,
   });
   const [isNight, setIsNight] = useState(false); //true means night
   const [showWantToReset, setShowWantToReset] = useState(false); //state for showing the modal for resetting the dashboard or not
@@ -53,11 +56,11 @@ export default function Home() {
 
   //marks for weather slider
   const marks = {
-    5: "Sonne",
-    4: "Nebel",
+    1: "Sonne",
+    2: "Nebel",
     3: "Regen",
-    2: "Gewitter",
-    1: "Sandsturm",
+    4: "Gewitter",
+    5: "Sandsturm",
   };
 
   const baseURL = "http://192.168.104.132:30010/remote/object/call";
@@ -80,7 +83,7 @@ export default function Home() {
   //sending daytime to the VR
   const sendWeather = async () => {
     createTimeout();
-    const msg = "press " + (index + 4) + " (Weather changed)";
+    const msg = "press " + (sliderWeather + 4) + " (Weather changed)";
     sendMessage({ variables: { message: msg } });
     /*
     const res = await axios.put(baseURL, {
@@ -225,9 +228,9 @@ export default function Home() {
                         setCurrentUser(values.name);
                         sendMessage({
                           variables: {
-                            message: `Current user is called ${values.name}`
+                            message: `Current user is called ${values.name}`,
                           },
-                        })
+                        });
                         /*
                         axios
                           .put(baseURL, {
