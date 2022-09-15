@@ -17,7 +17,7 @@ import { DarkModeSwitch } from "react-toggle-dark-mode";
 //TODO: Timer bauen. Wenn ein Regler verändert wurde, dann gibt es ein Timeout von {timeoutValue} und wenn der state des Timers wieder auf null ist dann sind die buttons wieder freigegeben
 
 export default function Home() {
-  const [isDay, setIsDay] = useState(false);
+  const [isNight, setIsNight] = useState(false); //true means night
   const [showWantToReset, setShowWantToReset] = useState(false); //state for showing the modal for resetting the dashboard or not
   const [sliderDayTime, setSliderDayTime] = useState(0);
   const [currentDayTime, setCurrentDayTime] = useState(0);
@@ -26,6 +26,10 @@ export default function Home() {
   const timeoutValue = 5; //this variable can be changed to set the value in seconds, how long a timeout till the next possible action should be
 
   const baseURL = "http://192.168.104.132:30010/remote/object/call";
+  const usernamePath =
+    "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_2";
+  const functionPath =
+    "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_2";
 
   useEffect(() => {
     changeTimeout > 0 &&
@@ -50,9 +54,9 @@ export default function Home() {
     setDayTime({ ...dayTime, changed: false });
     console.log("test");
     const res = await axios.put(baseURL, {
-      objectPath: "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_0",
+      objectPath: functionPath,
       functionName: "daytime",
-      parameters: { daytime: isDay },
+      parameters: { daytime: isNight },
       generateTransaction: true,
     });
     console.log(res);
@@ -62,13 +66,13 @@ export default function Home() {
   const sendDayNight = async () => {
     createTimeout();
     const res = await axios.put(baseURL, {
-      objectPath: "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_0",
+      objectPath: functionPath,
       functionName: "daytime",
-      parameters: { daytime: isDay },
+      parameters: { daytime: isNight },
       generateTransaction: true,
     });
     console.log(res);
-    console.log(isDay);
+    console.log(isNight);
   };
 
   //sending the level to the VR
@@ -86,7 +90,7 @@ export default function Home() {
       generateTransaction: true,
     });
     console.log(res);
-    console.log(isDay);
+    console.log(isNight);
   };
 
   //function to reset the dashboard for a new user. The window for tipping in a name will appear
@@ -170,7 +174,18 @@ export default function Home() {
                       if (values.name === "") {
                         setSubmitting(false);
                       } else {
+                        console.log(values.name);
                         setCurrentUser(values.name);
+                        axios
+                          .put(baseURL, {
+                            objectPath: usernamePath,
+                            functionName: "username",
+                            parameters: { username: values.name },
+                            generateTransaction: true,
+                          })
+                          .then((res) => {
+                            console.log(res);
+                          });
                       }
                     }}>
                     {/* Callback function containing Formik state and helpers that handle common form actions */}
@@ -268,16 +283,17 @@ export default function Home() {
                     id={styles.dayTimeButton}
                     disabled={changeTimeout > 0 ? true : false}
                     variant='danger'
-                    onClick={sendDayNight}>
+                    onClick={() => {
+                      setIsNight(!isNight);
+                      sendDayNight();
+                    }}>
                     {" "}
                     <DarkModeSwitch
                       style={{ marginBottom: "2rem" }}
-                      checked={isDay}
+                      checked={isNight}
                       className={styles.dayTime}
-                      onChange={() => {
-                        setIsDay(!isDay);
-                      }}
                       size={120}
+                      onChange={doNothing}
                     />
                   </Button>
                 </Col>
@@ -345,6 +361,7 @@ export default function Home() {
                     setCurrentUser("");
                     setShowWantToReset(false);
                     setChangeTimeout(0);
+                    setIsNight(false);
                   }}>
                   Ja
                 </Button>
