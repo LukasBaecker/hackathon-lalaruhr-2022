@@ -53,6 +53,12 @@ h2 {
   -ms-transform: translateY(10px);
   -o-transform: translateY(10px);
 }
+.btn-danger:disabled {
+  color: white;
+  opacity: 1;
+  background-color: $orange_light_lala;
+  border-color: $orange_light_lala;
+}
 .modal-body {
   text-align: center;
 }

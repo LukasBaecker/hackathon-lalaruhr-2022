@@ -11,19 +11,56 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { Formik } from "formik";
 import Form from "react-bootstrap/Form";
+import CircularSlider from "@fseehawer/react-circular-slider";
+import { DarkModeSwitch } from "react-toggle-dark-mode";
 
 //TODO: Timer bauen. Wenn ein Regler verändert wurde, dann gibt es ein Timeout von {timeoutValue} und wenn der state des Timers wieder auf null ist dann sind die buttons wieder freigegeben
 
 export default function Home() {
+  const [isDay, setIsDay] = useState(false);
   const [showWantToReset, setShowWantToReset] = useState(false); //state for showing the modal for resetting the dashboard or not
+  const [dayTime, setDayTime] = useState({ time: 12, changed: false });
   const [currentUser, setCurrentUser] = useState("");
   const [changeTimeout, setChangeTimeout] = useState(0);
   const timeoutValue = 60; //this variable can be changed to set the value in seconds, how long a timeout till the next possible action should be
+
+  const baseURL = "http://192.168.104.132:30010/remote/object/call";
 
   useEffect(() => {
     changeTimeout > 0 &&
       setTimeout(() => setChangeTimeout(changeTimeout - 1), 1000);
   }, [changeTimeout]);
+
+  //sending daytime to the VR
+  const sendDaytime = async () => {
+    setDayTime({ ...dayTime, changed: false });
+    console.log("test");
+    const res = await axios.put(baseURL, {
+      objectPath: "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_0",
+      functionName: "daytime",
+      parameters: { daytime: isDay },
+      generateTransaction: true,
+    });
+    console.log(res);
+    console.log(isDay);
+  };
+
+  //sending the level to the VR
+  const sendLevel = async (index) => {
+    const indexArr = [1, 2, 3];
+    const sendArr = indexArr.filter(function (val) {
+      return val != index;
+    });
+    console.log(sendArr);
+    const res = await axios.put(baseURL, {
+      objectPath: "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_0",
+      functionName: "level",
+      parameters: { level: index, levels: sendArr },
+      generateTransaction: true,
+    });
+    console.log(res);
+    console.log(isDay);
+  };
 
   //function to reset the dashboard for a new user. The window for tipping in a name will appear
   const setNewUser = async () => {
@@ -39,44 +76,35 @@ export default function Home() {
   //a function to change a value in the VR
   const tryAPI = async () => {
     setChangeTimeout(timeoutValue);
-    const res = await axios.put(
-      "http://192.168.137.1:30010/remote/object/call",
-      {
-        objectPath:
-          "/Game/VRTemplate/Maps/VRTemplateMap.VRTemplateMap:PersistentLevel.Function1_C_9",
-        functionName: "fuck2",
-        parameters: { Itensity: 3000.0 },
-        generateTransaction: true,
-      }
-    );
+    const res = await axios.put(baseURL, {
+      objectPath:
+        "/Game/VRTemplate/Maps/VRTemplateMap.VRTemplateMap:PersistentLevel.Function1_C_9",
+      functionName: "fuck2",
+      parameters: { Itensity: 3000.0 },
+      generateTransaction: true,
+    });
     console.log(res);
   };
   const tryAPIONOFF = async () => {
     setChangeTimeout(timeoutValue);
-    const res = await axios.put(
-      "http://192.168.137.1:30010/remote/object/call",
-      {
-        objectPath:
-          "/Game/VRTemplate/Maps/VRTemplateMap.VRTemplateMap:PersistentLevel.Function1_C_9",
-        functionName: "fuck",
-        generateTransaction: true,
-      }
-    );
+    const res = await axios.put(baseURL, {
+      objectPath:
+        "/Game/VRTemplate/Maps/VRTemplateMap.VRTemplateMap:PersistentLevel.Function1_C_9",
+      functionName: "fuck",
+      generateTransaction: true,
+    });
 
     console.log(res);
   };
   const tryAnotherRound = async () => {
     setChangeTimeout(timeoutValue);
-    const res = await axios.put(
-      "http://192.168.137.1:30010/remote/object/call",
-      {
-        objectPath:
-          "/Game/VRTemplate/Maps/VRTemplateMap.VRTemplateMap:PersistentLevel.Function1_C_9",
-        functionName: "fuck3",
-        parameters: { color: 1 },
-        generateTransaction: true,
-      }
-    );
+    const res = await axios.put(baseURL, {
+      objectPath:
+        "/Game/VRTemplate/Maps/VRTemplateMap.VRTemplateMap:PersistentLevel.Function1_C_9",
+      functionName: "fuck3",
+      parameters: { color: 2 },
+      generateTransaction: true,
+    });
     console.log(res);
   };
 
@@ -170,15 +198,28 @@ export default function Home() {
                 <Col className={styles.szenarioButtons}>
                   <h2>Wähle ein Szenario</h2>
                   <Button
-                    onClick={tryAPI}
+                    onClick={() => {
+                      sendLevel(0);
+                    }}
                     variant='danger'
                     size='lg'
                     disabled={changeTimeout > 0 ? true : false}>
-                    Wald
+                    Realität
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      sendLevel(1);
+                    }}
+                    variant='danger'
+                    size='lg'
+                    disabled={changeTimeout > 0 ? true : false}>
+                    Blumenwiese
                   </Button>
                   <br />
                   <Button
-                    onClick={tryAPIONOFF}
+                    onClick={() => {
+                      sendLevel(2);
+                    }}
                     variant='danger'
                     size='lg'
                     disabled={changeTimeout > 0 ? true : false}>
@@ -186,18 +227,56 @@ export default function Home() {
                   </Button>
                   <br />
                   <Button
-                    onClick={tryAnotherRound}
+                    onClick={() => {
+                      sendLevel(3);
+                    }}
                     variant='danger'
                     size='lg'
                     disabled={changeTimeout > 0 ? true : false}>
-                    Blumenwiese
+                    BlumenwieseDeluxe
                   </Button>
                 </Col>
-                <Col>2 of 2</Col>
+                <Col onClick={sendDaytime}>
+                  {" "}
+                  <DarkModeSwitch
+                    style={{ marginBottom: "2rem" }}
+                    checked={isDay}
+                    className={styles.dayTime}
+                    onChange={() => {
+                      setIsDay(!isDay);
+                    }}
+                    size={120}
+                  />
+                </Col>
+                <Col>
+                  <div
+                    className={styles.dayTimeCircle}
+                    onTouchEnd={() => {
+                      if (dayTime.changed) {
+                        sendDaytime;
+                        alert("hello");
+                      }
+                    }}>
+                    <CircularSlider
+                      min={0}
+                      max={23}
+                      label='Tageszeit'
+                      labelColor='#00000'
+                      knobColor='#ad3700'
+                      progressColorFrom='#ff5100'
+                      progressColorTo='#fe9a6c'
+                      progressSize={15}
+                      trackColor='#eeeeee'
+                      trackSize={10}
+                      onChange={(value) => {
+                        setDayTime({ time: value, changed: true });
+                      }}
+                    />
+                  </div>{" "}
+                </Col>
               </Row>
               <Row>
                 <Col></Col>
-                <Col>Countdown: {changeTimeout}</Col>
                 <Col>3 of 3</Col>
               </Row>
             </Container>
@@ -211,6 +290,12 @@ export default function Home() {
                 />
               </a>
             </span>
+            {changeTimeout !== 0 ? (
+              <div className={styles.countdown}>{changeTimeout}</div>
+            ) : (
+              <></>
+            )}
+
             <Modal
               show={showWantToReset}
               onHide={() => {
