@@ -41,8 +41,27 @@ const SEND_MESSAGE_MUTATION = gql`
   }
 `;
 
+// mutation to set current player name
+const SET_CURRENT_PLAYER_MUTATION = gql`
+  mutation setCurrentPlayer($name: String) {
+    updateCurrentPlayer(data: {
+      name: $name
+    })
+      {
+      data {
+        attributes {
+          name
+        }
+      }
+    }
+  }
+`;
+
 export default function Home() {
   const [sendMessage] = useMutation(SEND_MESSAGE_MUTATION, {
+    client: client,
+  });
+  const [setCurrentPlayer] = useMutation(SET_CURRENT_PLAYER_MUTATION, {
     client: client,
   });
   const [isNight, setIsNight] = useState(false); //true means night
@@ -226,6 +245,12 @@ export default function Home() {
                       } else {
                         console.log(values.name);
                         setCurrentUser(values.name);
+                        // set it in the backend
+                        setCurrentPlayer({
+                          variables: {
+                            name: values.name
+                          },
+                        });
                         sendMessage({
                           variables: {
                             message: `Current user is called ${values.name}`,
