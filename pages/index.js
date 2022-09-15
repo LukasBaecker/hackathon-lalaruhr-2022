@@ -19,10 +19,11 @@ import { DarkModeSwitch } from "react-toggle-dark-mode";
 export default function Home() {
   const [isDay, setIsDay] = useState(false);
   const [showWantToReset, setShowWantToReset] = useState(false); //state for showing the modal for resetting the dashboard or not
-  const [dayTime, setDayTime] = useState({ time: 12, changed: false });
+  const [sliderDayTime, setSliderDayTime] = useState(0);
+  const [currentDayTime, setCurrentDayTime] = useState(0);
   const [currentUser, setCurrentUser] = useState("");
   const [changeTimeout, setChangeTimeout] = useState(0);
-  const timeoutValue = 60; //this variable can be changed to set the value in seconds, how long a timeout till the next possible action should be
+  const timeoutValue = 5; //this variable can be changed to set the value in seconds, how long a timeout till the next possible action should be
 
   const baseURL = "http://192.168.104.132:30010/remote/object/call";
 
@@ -31,10 +32,35 @@ export default function Home() {
       setTimeout(() => setChangeTimeout(changeTimeout - 1), 1000);
   }, [changeTimeout]);
 
+  const createTimeout = () => {
+    if (changeTimeout == 0) {
+      setChangeTimeout(timeoutValue);
+    }
+  };
+  const dayTimeChecker = () => {
+    if (sliderDayTime !== currentDayTime) {
+      setCurrentDayTime(sliderDayTime);
+      createTimeout();
+    }
+  };
+
   //sending daytime to the VR
   const sendDaytime = async () => {
+    createTimeout();
     setDayTime({ ...dayTime, changed: false });
     console.log("test");
+    const res = await axios.put(baseURL, {
+      objectPath: "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_0",
+      functionName: "daytime",
+      parameters: { daytime: isDay },
+      generateTransaction: true,
+    });
+    console.log(res);
+  };
+
+  //sending daytime to the VR
+  const sendDayNight = async () => {
+    createTimeout();
     const res = await axios.put(baseURL, {
       objectPath: "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_0",
       functionName: "daytime",
@@ -47,6 +73,7 @@ export default function Home() {
 
   //sending the level to the VR
   const sendLevel = async (index) => {
+    createTimeout();
     const indexArr = [1, 2, 3];
     const sendArr = indexArr.filter(function (val) {
       return val != index;
@@ -70,9 +97,9 @@ export default function Home() {
 
   //when pushing the reset button just short, nothing would happen
   const doNothing = () => {
-    console.log("nothing done");
+    console.log("Karpador setzt Platscher ein.");
   };
-
+  /*
   //a function to change a value in the VR
   const tryAPI = async () => {
     setChangeTimeout(timeoutValue);
@@ -107,7 +134,7 @@ export default function Home() {
     });
     console.log(res);
   };
-
+*/
   //parameters for the longpress event hook
   const defaultOptions = {
     shouldPreventDefault: true,
@@ -236,43 +263,46 @@ export default function Home() {
                     BlumenwieseDeluxe
                   </Button>
                 </Col>
-                <Col onClick={sendDaytime}>
-                  {" "}
-                  <DarkModeSwitch
-                    style={{ marginBottom: "2rem" }}
-                    checked={isDay}
-                    className={styles.dayTime}
-                    onChange={() => {
-                      setIsDay(!isDay);
-                    }}
-                    size={120}
-                  />
+                <Col>
+                  <Button
+                    id={styles.dayTimeButton}
+                    disabled={changeTimeout > 0 ? true : false}
+                    variant='danger'
+                    onClick={sendDayNight}>
+                    {" "}
+                    <DarkModeSwitch
+                      style={{ marginBottom: "2rem" }}
+                      checked={isDay}
+                      className={styles.dayTime}
+                      onChange={() => {
+                        setIsDay(!isDay);
+                      }}
+                      size={120}
+                    />
+                  </Button>
                 </Col>
                 <Col>
-                  <div
+                  <Button
+                    variant='danger'
+                    disabled={changeTimeout > 0 ? true : false}
                     className={styles.dayTimeCircle}
-                    onTouchEnd={() => {
-                      if (dayTime.changed) {
-                        sendDaytime;
-                        alert("hello");
-                      }
-                    }}>
+                    onTouchEnd={dayTimeChecker}>
                     <CircularSlider
                       min={0}
                       max={23}
                       label='Tageszeit'
                       labelColor='#00000'
                       knobColor='#ad3700'
-                      progressColorFrom='#ff5100'
-                      progressColorTo='#fe9a6c'
+                      progressColorFrom='#b8ddde'
+                      progressColorTo='#5b3374'
                       progressSize={15}
                       trackColor='#eeeeee'
                       trackSize={10}
                       onChange={(value) => {
-                        setDayTime({ time: value, changed: true });
+                        setSliderDayTime(value);
                       }}
                     />
-                  </div>{" "}
+                  </Button>{" "}
                 </Col>
               </Row>
               <Row>

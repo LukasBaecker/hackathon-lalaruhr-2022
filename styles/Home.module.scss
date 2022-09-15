@@ -168,9 +168,16 @@
   -ms-border-radius: 50px;
   -o-border-radius: 50px;
 }
-.dayTime {
-  background-color: $orange_lala;
+#dayTimeButton {
   padding: 10px;
+  text-align: center;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+  height: 200px;
+  width: 200px;
+}
+.dayTime {
   border-radius: 100px;
   -webkit-border-radius: 100px;
   -moz-border-radius: 100px;
