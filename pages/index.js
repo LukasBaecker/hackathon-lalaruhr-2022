@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.scss";
+
 import axios from "axios";
 import useLongPress from "../useLongPress";
 import Container from "react-bootstrap/Container";
@@ -11,19 +12,30 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { Formik } from "formik";
 import Form from "react-bootstrap/Form";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import CircularSlider from "@fseehawer/react-circular-slider";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
-
-//TODO: Timer bauen. Wenn ein Regler verändert wurde, dann gibt es ein Timeout von {timeoutValue} und wenn der state des Timers wieder auf null ist dann sind die buttons wieder freigegeben
+import Slider from "rc-slider";
 
 export default function Home() {
   const [isNight, setIsNight] = useState(false); //true means night
   const [showWantToReset, setShowWantToReset] = useState(false); //state for showing the modal for resetting the dashboard or not
-  const [sliderDayTime, setSliderDayTime] = useState(0);
-  const [currentDayTime, setCurrentDayTime] = useState(0);
+  const [sliderWeather, setSliderWeather] = useState(0);
+  const [currentWeather, setCurrentWeather] = useState(0);
   const [currentUser, setCurrentUser] = useState("");
   const [changeTimeout, setChangeTimeout] = useState(0);
+  const [activeSzenario, setActiveSzenario] = useState(0);
   const timeoutValue = 5; //this variable can be changed to set the value in seconds, how long a timeout till the next possible action should be
+
+  //marks for weather slider
+  const marks = {
+    5: "Sonne",
+    4: "Nebel",
+    3: "Regen",
+    2: "Gewitter",
+    1: "Sandsturm",
+  };
 
   const baseURL = "http://192.168.104.132:30010/remote/object/call";
   const usernamePath =
@@ -41,18 +53,17 @@ export default function Home() {
       setChangeTimeout(timeoutValue);
     }
   };
-  const dayTimeChecker = () => {
-    if (sliderDayTime !== currentDayTime) {
-      setCurrentDayTime(sliderDayTime);
+  const weatherChecker = () => {
+    if (sliderWeather !== currentWeather) {
+      alert("it changed to" + sliderWeather + currentWeather);
+      setCurrentWeather(sliderWeather);
       createTimeout();
     }
   };
 
   //sending daytime to the VR
-  const sendDaytime = async () => {
+  const sendWeather = async () => {
     createTimeout();
-    setDayTime({ ...dayTime, changed: false });
-    console.log("test");
     const res = await axios.put(baseURL, {
       objectPath: functionPath,
       functionName: "daytime",
@@ -62,7 +73,7 @@ export default function Home() {
     console.log(res);
   };
 
-  //sending daytime to the VR
+  //sending boolean daytime to the VR
   const sendDayNight = async () => {
     createTimeout();
     const res = await axios.put(baseURL, {
@@ -77,6 +88,7 @@ export default function Home() {
 
   //sending the level to the VR
   const sendLevel = async (index) => {
+    setActiveSzenario(index);
     createTimeout();
     const indexArr = [1, 2, 3];
     const sendArr = indexArr.filter(function (val) {
@@ -144,7 +156,7 @@ export default function Home() {
     shouldPreventDefault: true,
     delay: 2500,
   };
-  const longPressEvent = useLongPress(setNewUser, doNothing, defaultOptions);
+  const longPressEvent = useLongPress(setNewUser, setNewUser, defaultOptions);
 
   return (
     <div className={styles.container}>
@@ -234,16 +246,17 @@ export default function Home() {
           </>
         ) : (
           <>
-            <h1 className={styles.title}>Verändere die Ansicht!</h1>
+            <h1 className={styles.title}>
+              {"Zeige " + currentUser + " die Zukunft!"}
+            </h1>
             <Container className={styles.dashboard}>
               <Row>
-                <Col className={styles.szenarioButtons}>
-                  <h2>Wähle ein Szenario</h2>
+                <Col className='szenarioButtons'>
                   <Button
                     onClick={() => {
                       sendLevel(0);
                     }}
-                    variant='danger'
+                    variant={activeSzenario == 0 ? "warning" : "danger"}
                     size='lg'
                     disabled={changeTimeout > 0 ? true : false}>
                     Realität
@@ -252,7 +265,17 @@ export default function Home() {
                     onClick={() => {
                       sendLevel(1);
                     }}
-                    variant='danger'
+                    variant={activeSzenario == 1 ? "warning" : "danger"}
+                    size='lg'
+                    disabled={changeTimeout > 0 ? true : false}>
+                    Walnussbaum
+                  </Button>
+                  <br />
+                  <Button
+                    onClick={() => {
+                      sendLevel(2);
+                    }}
+                    variant={activeSzenario == 2 ? "warning" : "danger"}
                     size='lg'
                     disabled={changeTimeout > 0 ? true : false}>
                     Blumenwiese
@@ -260,25 +283,15 @@ export default function Home() {
                   <br />
                   <Button
                     onClick={() => {
-                      sendLevel(2);
-                    }}
-                    variant='danger'
-                    size='lg'
-                    disabled={changeTimeout > 0 ? true : false}>
-                    Urbaner Garten
-                  </Button>
-                  <br />
-                  <Button
-                    onClick={() => {
                       sendLevel(3);
                     }}
-                    variant='danger'
+                    variant={activeSzenario == 3 ? "warning" : "danger"}
                     size='lg'
                     disabled={changeTimeout > 0 ? true : false}>
-                    BlumenwieseDeluxe
+                    Wald
                   </Button>
                 </Col>
-                <Col>
+                <Col className={styles.dayTimeCol}>
                   <Button
                     id={styles.dayTimeButton}
                     disabled={changeTimeout > 0 ? true : false}
@@ -291,13 +304,16 @@ export default function Home() {
                     <DarkModeSwitch
                       style={{ marginBottom: "2rem" }}
                       checked={isNight}
-                      className={styles.dayTime}
+                      className={
+                        isNight ? styles.dayTime : styles.dayTimeAllWhite
+                      }
                       size={120}
                       onChange={doNothing}
                     />
                   </Button>
                 </Col>
-                <Col>
+                <Col className={styles.weatherCol}>
+                  {/*
                   <Button
                     variant='danger'
                     disabled={changeTimeout > 0 ? true : false}
@@ -318,15 +334,43 @@ export default function Home() {
                         setSliderDayTime(value);
                       }}
                     />
-                  </Button>{" "}
+                    </Button>{" "}*/}
+
+                  <Button
+                    variant='danger'
+                    className={styles.weatherSlider}
+                    disabled={changeTimeout > 0 ? true : false}
+                    onTouchEnd={weatherChecker}>
+                    <Slider
+                      vertical
+                      min={1}
+                      max={5}
+                      marks={marks}
+                      step={1}
+                      included={false}
+                      defaultValue={0}
+                      onChange={(value) => {
+                        setSliderWeather(value);
+                      }}
+                    />
+                  </Button>
+                  {/*
+                  <DropdownButton
+                    variant='danger'
+                    id={styles.weatherButton}
+                    title='Dropdown button'>
+                    <Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
+                    <Dropdown.Item href='#/action-2'>
+                      Another action
+                    </Dropdown.Item>
+                    <Dropdown.Item href='#/action-3'>
+                      Something else
+                    </Dropdown.Item>
+                  </DropdownButton>*/}
                 </Col>
               </Row>
-              <Row>
-                <Col></Col>
-                <Col>3 of 3</Col>
-              </Row>
             </Container>
-            <span>
+            <span className={styles.reloadButton}>
               <a {...longPressEvent} className={styles.resumeCard}>
                 <Image
                   src='/icons8-restart.svg'
@@ -342,6 +386,7 @@ export default function Home() {
               <></>
             )}
 
+            {/**Modal opens when you click the reload button on the upper left corner */}
             <Modal
               show={showWantToReset}
               onHide={() => {
@@ -356,21 +401,21 @@ export default function Home() {
               </Modal.Header>
               <Modal.Body>
                 <Button
-                  variant='primary'
+                  variant='danger'
+                  onClick={() => {
+                    setShowWantToReset(false);
+                  }}>
+                  Weitermachen!
+                </Button>
+                <Button
+                  variant='warning'
                   onClick={() => {
                     setCurrentUser("");
                     setShowWantToReset(false);
                     setChangeTimeout(0);
                     setIsNight(false);
                   }}>
-                  Ja
-                </Button>
-                <Button
-                  variant='danger'
-                  onClick={() => {
-                    setShowWantToReset(false);
-                  }}>
-                  Nein, weitermachen!
+                  Beenden
                 </Button>
               </Modal.Body>
             </Modal>
@@ -378,10 +423,10 @@ export default function Home() {
         )}
         <span className={styles.biennale}>
           <Image
-            src='/2022-04-19_lala-Biennale_Logo_gelb-uai-516x175.png'
+            src='/gruenaufkumpelinLOGO.png'
             alt='Biennale Logo'
-            width={258}
-            height={88}
+            width={120}
+            height={120}
           />
         </span>
       </main>

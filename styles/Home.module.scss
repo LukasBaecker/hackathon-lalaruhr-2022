@@ -28,10 +28,32 @@
   max-height: 100%;
 }
 
-.szenarioButtons {
-  text-align: center;
+#weatherButton {
+  height: 150px;
+  font-size: 1.7rem;
+  color: white;
+  width: 300px;
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
 }
+.dayTimeCol {
+  align-items: center;
+  text-align: center;
 
+  #dayTimeButton {
+    margin-top: 30%;
+    padding: 100px;
+    text-align: center;
+    align-items: center;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    width: auto;
+  }
+}
 .title a {
   text-decoration: none;
 }
@@ -156,7 +178,7 @@
   min-width: 100px;
   padding: 10px;
   font-family: "Rubik", sans-serif;
-  color: $yellow_lala;
+  color: #000;
   position: fixed;
   top: 0;
   right: 0;
@@ -168,25 +190,52 @@
   -ms-border-radius: 50px;
   -o-border-radius: 50px;
 }
-#dayTimeButton {
-  padding: 10px;
-  text-align: center;
-  align-items: center;
-  min-width: 0;
-  min-height: 0;
-  height: 200px;
-  width: 200px;
-}
 .dayTime {
-  border-radius: 100px;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
-  -ms-border-radius: 100px;
-  -o-border-radius: 100px;
+  margin: 0px !important;
   line {
     color: #fff;
   }
   circle {
     color: white;
   }
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
+}
+.dayTimeAllWhite {
+  margin: 0px !important;
+  line {
+    color: #fff;
+  }
+  circle {
+    fill: white;
+    color: white;
+  }
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
+}
+.weatherCol {
+  text-align: center;
+}
+
+.weatherSlider {
+  padding: 50px;
+  margin-top: 40px;
+  margin-left: 0px;
+  width: 200px;
+  height: 90%;
+}
+.weatherSlider:active {
+  transform: translateY(0px);
+  box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25),
+    -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
+  -webkit-transform: translateY(0px);
+  -moz-transform: translateY(0px);
+  -ms-transform: translateY(0px);
+  -o-transform: translateY(0px);
 }
