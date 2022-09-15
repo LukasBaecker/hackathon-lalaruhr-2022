@@ -19,6 +19,7 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { DiscussionEmbed, CommentCount } from "disqus-react";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartOutlineIcon from "mdi-react/HeartOutlineIcon";
+import ChatIcon from "mdi-react/ChatIcon";
 
 // graphql api client
 const client = new ApolloClient({
@@ -162,30 +163,8 @@ const SingleScreenshotCard = ({
                   minute: "numeric",
                 }).format(new Date(screenshotPayload.attributes.createdAt))}
               </div>
-              <Link
-                legacyBehavior={false}
-                href='#'
-                onClick={() => {
-                  setDisqusModalOpen(true);
-                  setDisqusModalPayload({
-                    url: screenshotPayload.attributes.url,
-                    identifier: screenshotPayload.attributes.url,
-                    title: screenshotPayload.attributes.authorName,
-                  });
-                }}>
-                <CommentCount
-                  shortname='gruenaufkumpelin'
-                  config={{
-                    url: screenshotPayload.attributes.url,
-                    identifier: screenshotPayload.attributes.url,
-                    title: screenshotPayload.attributes.authorName,
-                  }}>
-                  {/* Placeholder Text */}
-                  Comments
-                </CommentCount>
-              </Link>
             </Col>
-            <Col>
+            <Col className={styles.reactionCol}>
               <div className='text-end'>
                 <span className='fs-5 align-bottom'>
                   {upvoteCount && upvoteCount + " "}
@@ -217,6 +196,19 @@ const SingleScreenshotCard = ({
                     )}
                   </Link>
                 </span>
+                <Link
+                  legacyBehavior={false}
+                  href='#'
+                  onClick={() => {
+                    setDisqusModalOpen(true);
+                    setDisqusModalPayload({
+                      url: screenshotPayload.attributes.url,
+                      identifier: screenshotPayload.attributes.url,
+                      title: screenshotPayload.attributes.authorName,
+                    });
+                  }}>
+                  <ChatIcon size={30} className={styles.commentIcon} />
+                </Link>
               </div>
             </Col>
           </Row>
@@ -262,7 +254,25 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <h1 className='mt-4 text-center'>Galerie</h1>
+      <h1 className='mt-4 text-center'>Glück auf, Kumpel*in!</h1>
+      <div className={styles.biennaleGallery}>
+        <Image
+          src='/gruenaufkumpelinLOGO.png'
+          alt='Biennale Logo'
+          width={100}
+          height={100}
+        />
+      </div>
+      <p
+        style={{
+          margin: "0 50px 50px 50px",
+        }}>
+        Schön, dass du in die Galerie deiner Erlebnisse und die deiner
+        Kumpel*innen. Du kannst dir die Bilder die in unserer VR-Umgebung
+        aufgenommen wurden anschauen, deine Liebsten herzen und wenn du magst
+        sogar kommentieren. Wir freuen uns eure Kommentare und Anregungen zu
+        lesen und freuen uns, dass du bei uns warst.
+      </p>
       <div className='text-center'>
         <ButtonGroup className='mb-3'>
           <ToggleButton
@@ -301,23 +311,23 @@ export default function Home() {
               ))}
             </Row>
           </Container>
-          <div className={styles.footer}>
-            <a
-              href='https://www.lala.ruhr/impressum/'
-              rel='noreferrer'
-              target='_blank'>
-              Impressum
-            </a>
-            {" | "}
-            <a
-              href='https://www.lala.ruhr/datenschutz/'
-              rel='noreferrer'
-              target='_blank'>
-              Datenschutz
-            </a>
-          </div>
         </>
       )}
+      <div className={styles.footer}>
+        <a
+          href='https://www.lala.ruhr/impressum/'
+          rel='noreferrer'
+          target='_blank'>
+          Impressum
+        </a>
+        {"|"}
+        <a
+          href='https://www.lala.ruhr/datenschutz/'
+          rel='noreferrer'
+          target='_blank'>
+          Datenschutz
+        </a>
+      </div>
       <DisqusModal
         disqusModalOpen={disqusModalOpen}
         setDisqusModalOpen={setDisqusModalOpen}

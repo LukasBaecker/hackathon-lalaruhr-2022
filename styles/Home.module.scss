@@ -239,9 +239,31 @@
   -o-transform: translateY(0px);
 }
 .footer {
+  z-index: 10;
   padding-top: 5px;
   padding-bottom: 5px;
   width: 100vw;
   text-align: center;
   background-color: $aqua_lala;
+}
+.reactionCol {
+  position: relative;
+
+  .text-end {
+    background-color: #555555;
+    position: absolute;
+    bottom: 0;
+    right: 12px;
+  }
+}
+
+.commentIcon {
+  color: $purple_lala;
+  margin-left: 5px;
+}
+.biennaleGallery {
+  width: 100vw;
+  text-align: center;
+  max-height: 20vh;
+  margin: (15px 0 15px 0);
 }
