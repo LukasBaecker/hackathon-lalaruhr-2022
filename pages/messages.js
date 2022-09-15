@@ -19,7 +19,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-// query for all screenshots
+// query for all messages
 const ALL_MESSAGES_QUERY = gql`
   query allMessages {
     messages(sort: "createdAt:DESC") {
@@ -27,22 +27,30 @@ const ALL_MESSAGES_QUERY = gql`
         id
         attributes {
           messageText
+          createdAt
         }
       }
     }
   }
 `;
 
-
-
 // single screenshot card component
 const SingleMessageCard = ({
+  createdAt,
   messageText,
   index
 }) => {
   return (
     <div key={index}>
-      <h2>{messageText}</h2>
+      <h3>
+        {messageText}
+        {' ['}
+        {Intl.DateTimeFormat(navigator.language, {
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+        }).format(new Date(createdAt))}
+        {'] '}</h3>
     </div>
   );
 };
@@ -84,6 +92,7 @@ export default function Home() {
             {data.messages.data.map((singleMessage, index) => (
               <SingleMessageCard
                 messageText={singleMessage.attributes.messageText}
+                createdAt={singleMessage.attributes.createdAt}
                 index={index} />
             ))}
 

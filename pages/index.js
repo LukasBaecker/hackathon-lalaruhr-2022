@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.scss";
-
 import axios from "axios";
 import useLongPress from "../useLongPress";
 import Container from "react-bootstrap/Container";
@@ -17,8 +16,32 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import CircularSlider from "@fseehawer/react-circular-slider";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
 import Slider from "rc-slider";
+import { gql, useQuery, useMutation, ApolloClient, InMemoryCache } from "@apollo/client";
+
+
+// graphql api client
+const client = new ApolloClient({
+  uri: "https://gruenaufkumpelin.de/graphql",
+  cache: new InMemoryCache(),
+});
+
+// mutation to send a message
+const SEND_MESSAGE_MUTATION = gql`
+  mutation sendMessage($message: String) {
+    createMessage(data:{
+      messageText: $message
+    }){
+      data {
+        id
+      }
+    }
+  }
+`;
 
 export default function Home() {
+  const [sendMessage] = useMutation(SEND_MESSAGE_MUTATION, {
+    client: client
+  });
   const [isNight, setIsNight] = useState(false); //true means night
   const [showWantToReset, setShowWantToReset] = useState(false); //state for showing the modal for resetting the dashboard or not
   const [sliderWeather, setSliderWeather] = useState(0);
@@ -85,7 +108,6 @@ export default function Home() {
       sendMessage({ variables: { message: "press Q (its Day now)" } });
     }
 
-    sendMessage({ variables: { message: msg } });
     /*
     const res = await axios.put(baseURL, {
       objectPath: functionPath,
@@ -201,6 +223,11 @@ export default function Home() {
                       } else {
                         console.log(values.name);
                         setCurrentUser(values.name);
+                        sendMessage({
+                          variables: {
+                            message: `Current user is called ${values.name}`
+                          },
+                        })
                         /*
                         axios
                           .put(baseURL, {
