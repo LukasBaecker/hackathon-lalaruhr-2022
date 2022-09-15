@@ -3,15 +3,22 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../styles/Home.module.scss";
-import { Container, Row, Card, Modal, ButtonGroup, ToggleButton } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Card,
+  Modal,
+  ButtonGroup,
+  ToggleButton,
+} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import Lightbox from "react-18-image-lightbox";
 import "react-18-image-lightbox/style.css";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { DiscussionEmbed, CommentCount } from 'disqus-react';
-import HeartIcon from 'mdi-react/HeartIcon';
-import HeartOutlineIcon from 'mdi-react/HeartOutlineIcon';
+import { DiscussionEmbed, CommentCount } from "disqus-react";
+import HeartIcon from "mdi-react/HeartIcon";
+import HeartOutlineIcon from "mdi-react/HeartOutlineIcon";
 
 // graphql api client
 const client = new ApolloClient({
@@ -39,12 +46,7 @@ const ALL_SCREENSHOTS_QUERY = gql`
 // mutation to upvote a screenshot
 const UPVOTE_SCREENSHOT_MUTATION = gql`
   mutation upvoteScreenshot($id: ID!, $upvoteCount: Int) {
-    updateScreenshot(
-      id: $id
-      data: {
-        upvoteCount: $upvoteCount
-      }
-    ) {
+    updateScreenshot(id: $id, data: { upvoteCount: $upvoteCount }) {
       data {
         id
         attributes {
@@ -80,58 +82,60 @@ const ImageLightbox = ({ url, className }) => {
 const DisqusModal = ({
   disqusModalOpen,
   setDisqusModalOpen,
-  disqusModalPayload
+  disqusModalPayload,
 }) => {
   return (
     <Modal
       show={disqusModalOpen}
       onHide={() => setDisqusModalOpen(false)}
       style={{ padding: 0, borderRadius: "10px" }}
-      size="lg">
+      size='lg'>
       <Card>
         <ImageLightbox
           url={disqusModalPayload.url}
-          className="responsive border-0 card-img-top" />
+          className='responsive border-0 card-img-top'
+        />
       </Card>
       <Modal.Body>
-
         {/* <div className="text-normal mt-0 pt-0" style={{ whiteSpace: 'pre-wrap' }}>
           <p>{disqusModalPayload.title}</p>
         </div> */}
 
         <DiscussionEmbed
           shortname='gruenaufkumpelin'
-          config={
-            {
-              url: disqusModalPayload.url,
-              identifier: disqusModalPayload.identifier,
-              title: disqusModalPayload.title,
-            }
-          }
+          config={{
+            url: disqusModalPayload.url,
+            identifier: disqusModalPayload.identifier,
+            title: disqusModalPayload.title,
+          }}
         />
 
-        <div className="text-center mt-3">
-          <button className="btn btn-danger" onClick={() => setDisqusModalOpen(false)}>
+        <div className='text-center mt-3'>
+          <button
+            className='btn btn-danger'
+            onClick={() => setDisqusModalOpen(false)}>
             Schließen
           </button>
         </div>
       </Modal.Body>
     </Modal>
   );
-}
+};
 
 // single screenshot card component
 const SingleScreenshotCard = ({
   screenshotPayload,
   index,
   setDisqusModalOpen,
-  setDisqusModalPayload
+  setDisqusModalPayload,
 }) => {
-  const [upvoteCount, setUpvoteCount] = useState(screenshotPayload.attributes.upvoteCount);
+  const [upvoteCount, setUpvoteCount] = useState(
+    screenshotPayload.attributes.upvoteCount
+  );
   const [canUpvote, setCanUpvote] = useState(true);
   // upvote mutation
   const [upvoteScreenshot] = useMutation(UPVOTE_SCREENSHOT_MUTATION, {
-    client: client
+    client: client,
   });
 
   return (
@@ -158,47 +162,59 @@ const SingleScreenshotCard = ({
                   minute: "numeric",
                 }).format(new Date(screenshotPayload.attributes.createdAt))}
               </div>
-              <Link legacyBehavior={false} href="#" onClick={() => {
-                setDisqusModalOpen(true);
-                setDisqusModalPayload({
-                  url: screenshotPayload.attributes.url,
-                  identifier: screenshotPayload.attributes.url,
-                  title: screenshotPayload.attributes.authorName,
-                });
-              }}>
+              <Link
+                legacyBehavior={false}
+                href='#'
+                onClick={() => {
+                  setDisqusModalOpen(true);
+                  setDisqusModalPayload({
+                    url: screenshotPayload.attributes.url,
+                    identifier: screenshotPayload.attributes.url,
+                    title: screenshotPayload.attributes.authorName,
+                  });
+                }}>
                 <CommentCount
                   shortname='gruenaufkumpelin'
-                  config={
-                    {
-                      url: screenshotPayload.attributes.url,
-                      identifier: screenshotPayload.attributes.url,
-                      title: screenshotPayload.attributes.authorName,
-                    }
-                  }
-                >
+                  config={{
+                    url: screenshotPayload.attributes.url,
+                    identifier: screenshotPayload.attributes.url,
+                    title: screenshotPayload.attributes.authorName,
+                  }}>
                   {/* Placeholder Text */}
                   Comments
                 </CommentCount>
               </Link>
             </Col>
             <Col>
-              <div className="text-end">
-                <span className="fs-5 align-bottom">{upvoteCount && upvoteCount + ' '}</span>
-                <span className="align-baseline">
-                  <Link legacyBehavior={false} href="#" onClick={() => {
-                    if (canUpvote) {
-                      upvoteScreenshot({
-                        variables: {
-                          id: screenshotPayload.id,
-                          upvoteCount: upvoteCount + 1,
-                        },
-                      }).then(() => {
-                        setUpvoteCount(upvoteCount + 1);
-                        setCanUpvote(false);
-                      });
-                    }
-                  }}>
-                    {canUpvote ? <HeartOutlineIcon size={30} style={{ color: '#FF7F7F' }} /> : <HeartIcon size={30} style={{ color: "#FF7F7F" }} />}
+              <div className='text-end'>
+                <span className='fs-5 align-bottom'>
+                  {upvoteCount && upvoteCount + " "}
+                </span>
+                <span className='align-baseline'>
+                  <Link
+                    legacyBehavior={false}
+                    href='#'
+                    onClick={() => {
+                      if (canUpvote) {
+                        upvoteScreenshot({
+                          variables: {
+                            id: screenshotPayload.id,
+                            upvoteCount: upvoteCount + 1,
+                          },
+                        }).then(() => {
+                          setUpvoteCount(upvoteCount + 1);
+                          setCanUpvote(false);
+                        });
+                      }
+                    }}>
+                    {canUpvote ? (
+                      <HeartOutlineIcon
+                        size={30}
+                        style={{ color: "#FF7F7F" }}
+                      />
+                    ) : (
+                      <HeartIcon size={30} style={{ color: "#FF7F7F" }} />
+                    )}
                   </Link>
                 </span>
               </div>
@@ -221,13 +237,15 @@ export default function Home() {
   // query
   const { loading, data } = useQuery(ALL_SCREENSHOTS_QUERY, {
     variables: {
-      sortBy: sortByUpvotes ? ["upvoteCount:DESC", "createdAt:DESC"] : ["createdAt:DESC"]
+      sortBy: sortByUpvotes
+        ? ["upvoteCount:DESC", "createdAt:DESC"]
+        : ["createdAt:DESC"],
     },
     client: client,
     pollInterval: 3000,
-    fetchPolicy: 'network-only',
-    onCompleted: () => console.log('called'),
-    fetchPolicy: 'no-cache',
+    fetchPolicy: "network-only",
+    onCompleted: () => console.log("called"),
+    fetchPolicy: "no-cache",
   });
 
   return (
@@ -244,47 +262,62 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <h1 className="mt-4 text-center">Galerie</h1>
-      <div className="text-center">
-      <ButtonGroup className="mb-3">
-        <ToggleButton
-          type="radio"
-          id="latest"
-          variant={ !sortByUpvotes ? 'danger' : 'secondary' }
-          style={{ marginRight: 0, boxShadow: 'none', minWidth: "150px" }}
-          name="radio"
-          onChange={(e) => setSortByUpvotes(false)}
-        >
-          Neueste
-        </ToggleButton>
-        <ToggleButton
-          type="radio"
-          id="popular"
-          variant={ sortByUpvotes ? 'danger' : 'secondary' }
-          style={{ boxShadow: 'none', minWidth: "150px"}}
-          name="radio"
-          onChange={(e) => setSortByUpvotes(true)}
-        >
-          Beliebt
-        </ToggleButton>
-
-      </ButtonGroup>
+      <h1 className='mt-4 text-center'>Galerie</h1>
+      <div className='text-center'>
+        <ButtonGroup className='mb-3'>
+          <ToggleButton
+            type='radio'
+            id='latest'
+            variant={!sortByUpvotes ? "danger" : "secondary"}
+            style={{ marginRight: 0, boxShadow: "none", minWidth: "150px" }}
+            name='radio'
+            onChange={(e) => setSortByUpvotes(false)}>
+            Neueste
+          </ToggleButton>
+          <ToggleButton
+            type='radio'
+            id='popular'
+            variant={sortByUpvotes ? "danger" : "secondary"}
+            style={{ boxShadow: "none", minWidth: "150px" }}
+            name='radio'
+            onChange={(e) => setSortByUpvotes(true)}>
+            Beliebt
+          </ToggleButton>
+        </ButtonGroup>
       </div>
 
-      {!loading &&
-        <Container>
-          <Row>
-            {data.screenshots.data.map((singleScreenshot, index) => (
-              <SingleScreenshotCard
-                screenshotPayload={singleScreenshot}
-                setDisqusModalOpen={setDisqusModalOpen}
-                setDisqusModalPayload={setDisqusModalPayload}
-                index={index}
-                key={index} />
-            ))}
-          </Row>
-        </Container>
-      }
+      {!loading && (
+        <>
+          <Container>
+            <Row>
+              {data.screenshots.data.map((singleScreenshot, index) => (
+                <SingleScreenshotCard
+                  screenshotPayload={singleScreenshot}
+                  setDisqusModalOpen={setDisqusModalOpen}
+                  setDisqusModalPayload={setDisqusModalPayload}
+                  index={index}
+                  key={index}
+                />
+              ))}
+            </Row>
+          </Container>
+          <div className={styles.footer}>
+            <a
+              href='https://www.lala.ruhr/impressum/'
+              rel='noreferrer'
+              target='_blank'>
+              Impressum
+            </a>
+            {" | "}
+            <a
+              href='https://www.lala.ruhr/datenschutz/'
+              rel='noreferrer'
+              target='_blank'>
+              Datenschutz
+            </a>
+          </div>
+        </>
+      )}
       <DisqusModal
         disqusModalOpen={disqusModalOpen}
         setDisqusModalOpen={setDisqusModalOpen}
