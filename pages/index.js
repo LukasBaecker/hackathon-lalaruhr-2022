@@ -102,7 +102,7 @@ export default function Home() {
   //sending boolean daytime to the VR
   const sendDayNight = async () => {
     createTimeout();
-    if (isNight) {
+    if (!isNight) {
       sendMessage({ variables: { message: "press E (its Night now)" } });
     } else {
       sendMessage({ variables: { message: "press Q (its Day now)" } });
@@ -115,8 +115,8 @@ export default function Home() {
       parameters: { daytime: isNight },
       generateTransaction: true,
     });
-    */
     console.log(res);
+    */
   };
 
   //sending the level to the VR

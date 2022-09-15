@@ -60,7 +60,7 @@ export default function Home() {
 
   const { loading, data } = useQuery(ALL_MESSAGES_QUERY, {
     client: client,
-    pollInterval: 3000,
+    pollInterval: 1000,
     fetchPolicy: 'network-only',
   });
 
@@ -93,7 +93,8 @@ export default function Home() {
               <SingleMessageCard
                 messageText={singleMessage.attributes.messageText}
                 createdAt={singleMessage.attributes.createdAt}
-                index={index} />
+                index={index}
+                key={index} />
             ))}
 
           </Container>

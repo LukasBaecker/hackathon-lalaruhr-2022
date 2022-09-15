@@ -279,7 +279,8 @@ export default function Home() {
                 screenshotPayload={singleScreenshot}
                 setDisqusModalOpen={setDisqusModalOpen}
                 setDisqusModalPayload={setDisqusModalPayload}
-                index={index} />
+                index={index}
+                key={index} />
             ))}
           </Row>
         </Container>
