@@ -13,7 +13,7 @@ import { DiscussionEmbed, CommentCount } from 'disqus-react';
 
 // graphql api client
 const client = new ApolloClient({
-  uri: "http://95.111.250.248:1337/graphql",
+  uri: "https://gruenaufkumpelin.de/graphql",
   cache: new InMemoryCache(),
 });
 
