@@ -53,48 +53,61 @@ export default function Home() {
       setChangeTimeout(timeoutValue);
     }
   };
-  const weatherChecker = () => {
-    if (sliderWeather !== currentWeather) {
-      alert("it changed to" + sliderWeather + currentWeather);
-      setCurrentWeather(sliderWeather);
-      createTimeout();
-    }
-  };
 
   //sending daytime to the VR
   const sendWeather = async () => {
     createTimeout();
+    const msg = "press " + (index + 4) + " (Weather changed)";
+    sendMessage({ variables: { message: msg } });
+    /*
     const res = await axios.put(baseURL, {
       objectPath: functionPath,
       functionName: "daytime",
       parameters: { daytime: isNight },
       generateTransaction: true,
     });
-    console.log(res);
+    console.log(res);*/
+  };
+  //checking if the weather has changed by the interaction of the user on slider
+  const weatherChecker = () => {
+    if (sliderWeather !== currentWeather) {
+      setCurrentWeather(sliderWeather);
+      sendWeather(sliderWeather);
+    }
   };
 
   //sending boolean daytime to the VR
   const sendDayNight = async () => {
     createTimeout();
+    if (isNight) {
+      sendMessage({ variables: { message: "press E (its Night now)" } });
+    } else {
+      sendMessage({ variables: { message: "press Q (its Day now)" } });
+    }
+
+    sendMessage({ variables: { message: msg } });
+    /*
     const res = await axios.put(baseURL, {
       objectPath: functionPath,
       functionName: "daytime",
       parameters: { daytime: isNight },
       generateTransaction: true,
     });
+    */
     console.log(res);
-    console.log(isNight);
   };
 
   //sending the level to the VR
   const sendLevel = async (index) => {
     setActiveSzenario(index);
     createTimeout();
+    const msg = "press " + (index + 1) + " (Szenario changed)";
+    sendMessage({ variables: { message: msg } });
+    /*
     const indexArr = [1, 2, 3];
     const sendArr = indexArr.filter(function (val) {
       return val != index;
     });
-    console.log(sendArr);
     const res = await axios.put(baseURL, {
       objectPath: "/Game/Biennale_Map.Biennale_Map:PersistentLevel.action_C_0",
       functionName: "level",
@@ -102,12 +115,12 @@ export default function Home() {
       generateTransaction: true,
     });
     console.log(res);
-    console.log(isNight);
+    console.log(isNight);*/
   };
 
   //function to reset the dashboard for a new user. The window for tipping in a name will appear
   const setNewUser = async () => {
-    console.log("game has beeing reseted");
+    sendMessage({ variables: { message: "press SPACE (reset the game)" } });
     setShowWantToReset(true);
   };
 
@@ -188,6 +201,7 @@ export default function Home() {
                       } else {
                         console.log(values.name);
                         setCurrentUser(values.name);
+                        /*
                         axios
                           .put(baseURL, {
                             objectPath: usernamePath,
@@ -198,6 +212,7 @@ export default function Home() {
                           .then((res) => {
                             console.log(res);
                           });
+                          */
                       }
                     }}>
                     {/* Callback function containing Formik state and helpers that handle common form actions */}
