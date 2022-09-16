@@ -43,11 +43,11 @@ const SEND_MESSAGE_MUTATION = gql`
 
 // mutation to set current player name
 const SET_CURRENT_PLAYER_MUTATION = gql`
-  mutation setCurrentPlayer($name: String) {
-    updateCurrentPlayer(data: { name: $name }) {
+  mutation setCurrentPlayer($currentSettings: JSON) {
+    updateCurrentPlayer(data: { currentSettings: $currentSettings }) {
       data {
         attributes {
-          name
+          currentSettings
         }
       }
     }
@@ -63,12 +63,30 @@ export default function Home() {
   });
   const [isNight, setIsNight] = useState(false); //true means night
   const [showWantToReset, setShowWantToReset] = useState(false); //state for showing the modal for resetting the dashboard or not
-  const [sliderWeather, setSliderWeather] = useState(0);
-  const [currentWeather, setCurrentWeather] = useState(0);
+  const [sliderWeather, setSliderWeather] = useState(1);
+  const [currentWeather, setCurrentWeather] = useState(1);
+  const [currentTemperature, setCurrentTemperature] = useState(1);
   const [currentUser, setCurrentUser] = useState("");
   const [changeTimeout, setChangeTimeout] = useState(0);
   const [activeSzenario, setActiveSzenario] = useState(0);
   const timeoutValue = 5; //this variable can be changed to set the value in seconds, how long a timeout till the next possible action should be
+
+  // useEffect sending state updates to the backend
+  useEffect(() => {
+    const statusObject = {
+      currentUser: currentUser,
+      currentTemperature: currentTemperature,
+      currentWeather: currentWeather,
+      activeSzenario: activeSzenario,
+      isFromVR: true
+    };
+
+    setCurrentPlayer({
+      variables: {
+        currentSettings: statusObject
+      },
+    })
+  },[currentUser, currentWeather, activeSzenario, currentTemperature])
 
   //marks for weather slider
   const marks = {
@@ -101,6 +119,7 @@ export default function Home() {
     createTimeout();
     const msg = "press " + (sliderWeather + 4) + " (Weather changed)";
     sendMessage({ variables: { message: msg } });
+    console.log('sending weather now');
     /*
     const res = await axios.put(baseURL, {
       objectPath: functionPath,
@@ -115,6 +134,7 @@ export default function Home() {
     if (sliderWeather !== currentWeather) {
       setCurrentWeather(sliderWeather);
       sendWeather(sliderWeather);
+      console.log('weather has changed');
     }
   };
 
@@ -242,12 +262,12 @@ export default function Home() {
                       } else {
                         console.log(values.name);
                         setCurrentUser(values.name);
-                        // set it in the backend
-                        setCurrentPlayer({
-                          variables: {
-                            name: values.name,
-                          },
-                        });
+                        // set it in the backend is now in useEffect
+                        // setCurrentPlayer({
+                        //   variables: {
+                        //     name: values.name,
+                        //   },
+                        // });
                         sendMessage({
                           variables: {
                             message: `Current user is called ${values.name}`,
@@ -366,6 +386,9 @@ export default function Home() {
                       defaultValue={1}
                       marks={{ 1: "1°C", 2: "2°C", 3: "3°C", 4: "4°C" }}
                       step={1}
+                      onChange={(value) => {
+                        setCurrentTemperature(value);
+                      }}
                     />
                   </Button>
                   <Button
