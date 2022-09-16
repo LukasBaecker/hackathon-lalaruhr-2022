@@ -20,6 +20,15 @@ import { DiscussionEmbed, CommentCount } from "disqus-react";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartOutlineIcon from "mdi-react/HeartOutlineIcon";
 import ChatIcon from "mdi-react/ChatIcon";
+import CityIcon from "mdi-react/CityIcon"; //reality
+import NaturePeopleIcon from "mdi-react/NaturePeopleIcon"; //park and garden
+import FlowerIcon from "mdi-react/FlowerIcon"; //flower
+import ForestIcon from "mdi-react/ForestIcon"; //forest
+import WhiteBalanceSunnyIcon from "mdi-react/WhiteBalanceSunnyIcon"; //sun
+import WeatherFogIcon from "mdi-react/WeatherFogIcon"; //foggy
+import WeatherPouringIcon from "mdi-react/WeatherPouringIcon"; //rain
+import WeatherLightningRainyIcon from "mdi-react/WeatherLightningRainyIcon"; //thunderstorm
+import WeatherDustIcon from "mdi-react/WeatherDustIcon"; //sandstorm
 
 // graphql api client
 const client = new ApolloClient({
@@ -170,39 +179,55 @@ const SingleScreenshotCard = ({
                   {upvoteCount && upvoteCount + " "}
                 </span>
                 <span className='align-baseline'>
-                    {canUpvote ? (
-                      <HeartOutlineIcon
-                        size={30}
-                        style={{ color: "#FF7F7F", cursor: "pointer" }}
-                        onClick={() => {
-                          if (canUpvote) {
-                            upvoteScreenshot({
-                              variables: {
-                                id: screenshotPayload.id,
-                                upvoteCount: upvoteCount + 1,
-                              },
-                            }).then(() => {
-                              setUpvoteCount(upvoteCount + 1);
-                              setCanUpvote(false);
-                            });
-                          }
-                        }}
-                      />
-                    ) : (
-                      <HeartIcon size={30} style={{ color: "#FF7F7F" }} />
-                    )}
+                  {canUpvote ? (
+                    <HeartOutlineIcon
+                      size={30}
+                      style={{ color: "#FF7F7F", cursor: "pointer" }}
+                      onClick={() => {
+                        if (canUpvote) {
+                          upvoteScreenshot({
+                            variables: {
+                              id: screenshotPayload.id,
+                              upvoteCount: upvoteCount + 1,
+                            },
+                          }).then(() => {
+                            setUpvoteCount(upvoteCount + 1);
+                            setCanUpvote(false);
+                          });
+                        }
+                      }}
+                    />
+                  ) : (
+                    <HeartIcon size={30} style={{ color: "#FF7F7F" }} />
+                  )}
                 </span>
-                  <ChatIcon size={30} className={styles.commentIcon} onClick={() => {
+                <ChatIcon
+                  size={30}
+                  className={styles.commentIcon}
+                  onClick={() => {
                     setDisqusModalOpen(true);
                     setDisqusModalPayload({
                       url: screenshotPayload.attributes.url,
                       identifier: screenshotPayload.attributes.url,
                       title: screenshotPayload.attributes.authorName,
                     });
-                  }}/>
+                  }}
+                />
               </div>
             </Col>
           </Row>
+          <div
+            className='conditionBox'
+            onClick={() => {
+              //TODO: implement modal and show all of the three infos
+              console.log("here to open the modal");
+            }}>
+            {/*TODO: adding conditional rendering*/}
+
+            {"+4°C" /**showing the temp */}
+            <CityIcon size={30} className='conditionIcon' />
+            <WhiteBalanceSunnyIcon size={30} className='conditionIcon' />
+          </div>
         </Card.Body>
       </Card>
     </Col>
@@ -254,19 +279,15 @@ export default function Home() {
           height={100}
         />
       </div>
-      <div className="text-center">
-      <p className="mb-1">
-          Schön das Du da bist!
-      </p>
-      <p className="mb-1">
+      <div className='text-center'>
+        <p className='mb-1'>Schön das Du da bist!</p>
+        <p className='mb-1'>
           Hier kannst Du alle aufgenommen Bilder aus unserer VR-Umgebung sehen.
-      </p>
-      <p className="mb-1">
+        </p>
+        <p className='mb-1'>
           Lass gerne ein Like da, oder schreibe Deine Gedanken nieder.
-      </p>
-      <p>
-          Vielen Dank für Deinen Besuch.
-      </p>
+        </p>
+        <p>Vielen Dank für Deinen Besuch.</p>
       </div>
       <div className='text-center'>
         <ButtonGroup className='mb-3'>

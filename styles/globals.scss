@@ -194,3 +194,24 @@ code {
   -ms-transform: translateY(0px);
   -o-transform: translateY(0px);
 }
+.conditionBox {
+  background-color: #ffffff99;
+  backdrop-filter: blur(10px);
+  position: absolute;
+  top: 0;
+  right: 10px;
+  padding: 5px 12px 5px 12px;
+  border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -ms-border-radius: 0 0 5px 5px;
+  -o-border-radius: 0 0 5px 5px;
+}
+
+.conditionIcon {
+  padding-left: 10px;
+  color: #000;
+}
+.conditionBox:hover {
+  cursor: pointer;
+}
