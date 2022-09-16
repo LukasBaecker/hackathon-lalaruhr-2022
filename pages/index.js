@@ -44,10 +44,7 @@ const SEND_MESSAGE_MUTATION = gql`
 // mutation to set current player name
 const SET_CURRENT_PLAYER_MUTATION = gql`
   mutation setCurrentPlayer($name: String) {
-    updateCurrentPlayer(data: {
-      name: $name
-    })
-      {
+    updateCurrentPlayer(data: { name: $name }) {
       data {
         attributes {
           name
@@ -248,7 +245,7 @@ export default function Home() {
                         // set it in the backend
                         setCurrentPlayer({
                           variables: {
-                            name: values.name
+                            name: values.name,
                           },
                         });
                         sendMessage({
@@ -362,6 +359,15 @@ export default function Home() {
                   </Button>
                 </Col>
                 <Col className={styles.dayTimeCol}>
+                  <Button className='tempSlider' variant='primary'>
+                    <Slider
+                      min={1}
+                      max={4}
+                      defaultValue={1}
+                      marks={{ 1: "1°C", 2: "2°C", 3: "3°C", 4: "4°C" }}
+                      step={1}
+                    />
+                  </Button>
                   <Button
                     id={styles.dayTimeButton}
                     disabled={changeTimeout > 0 ? true : false}
@@ -411,18 +417,20 @@ export default function Home() {
                     className={styles.weatherSlider}
                     disabled={changeTimeout > 0 ? true : false}
                     onTouchEnd={weatherChecker}>
-                    <Slider
-                      vertical
-                      min={1}
-                      max={5}
-                      marks={marks}
-                      step={1}
-                      included={false}
-                      defaultValue={0}
-                      onChange={(value) => {
-                        setSliderWeather(value);
-                      }}
-                    />
+                    <span className='weatherSlider'>
+                      <Slider
+                        vertical
+                        min={1}
+                        max={5}
+                        marks={marks}
+                        step={1}
+                        included={false}
+                        defaultValue={0}
+                        onChange={(value) => {
+                          setSliderWeather(value);
+                        }}
+                      />
+                    </span>
                   </Button>
                   {/*
                   <DropdownButton
