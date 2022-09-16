@@ -156,7 +156,7 @@ code {
     -o-transform: translateY(18px);
   }
   .rc-slider-handle {
-    background-color: $purple-lala !important;
+    background-color: $orange_light_lala !important;
     border-color: $aqua_lala !important;
     opacity: 1 !important;
     width: 50px !important;
@@ -171,7 +171,18 @@ code {
     -ms-transform: translateY(20px) !important;
     -o-transform: translateY(20px) !important;
   }
-  //rc-slider-with-marks
+  .rc-slider-track {
+    color: $orange_lala;
+    background-color: $orange_lala;
+    transform: translateY(18px);
+    -webkit-transform: translateY(18px);
+    -moz-transform: translateY(18px);
+    -ms-transform: translateY(18px);
+    -o-transform: translateY(18px);
+  }
+  .rc-slider-dot-active {
+    border-color: $orange_light_lala;
+  }
 }
 
 .tempSlider:active {
