@@ -170,45 +170,36 @@ const SingleScreenshotCard = ({
                   {upvoteCount && upvoteCount + " "}
                 </span>
                 <span className='align-baseline'>
-                  <Link
-                    legacyBehavior={false}
-                    href='#'
-                    onClick={() => {
-                      if (canUpvote) {
-                        upvoteScreenshot({
-                          variables: {
-                            id: screenshotPayload.id,
-                            upvoteCount: upvoteCount + 1,
-                          },
-                        }).then(() => {
-                          setUpvoteCount(upvoteCount + 1);
-                          setCanUpvote(false);
-                        });
-                      }
-                    }}>
                     {canUpvote ? (
                       <HeartOutlineIcon
                         size={30}
-                        style={{ color: "#FF7F7F" }}
+                        style={{ color: "#FF7F7F", cursor: "pointer" }}
+                        onClick={() => {
+                          if (canUpvote) {
+                            upvoteScreenshot({
+                              variables: {
+                                id: screenshotPayload.id,
+                                upvoteCount: upvoteCount + 1,
+                              },
+                            }).then(() => {
+                              setUpvoteCount(upvoteCount + 1);
+                              setCanUpvote(false);
+                            });
+                          }
+                        }}
                       />
                     ) : (
                       <HeartIcon size={30} style={{ color: "#FF7F7F" }} />
                     )}
-                  </Link>
                 </span>
-                <Link
-                  legacyBehavior={false}
-                  href='#'
-                  onClick={() => {
+                  <ChatIcon size={30} className={styles.commentIcon} onClick={() => {
                     setDisqusModalOpen(true);
                     setDisqusModalPayload({
                       url: screenshotPayload.attributes.url,
                       identifier: screenshotPayload.attributes.url,
                       title: screenshotPayload.attributes.authorName,
                     });
-                  }}>
-                  <ChatIcon size={30} className={styles.commentIcon} />
-                </Link>
+                  }}/>
               </div>
             </Col>
           </Row>
@@ -254,7 +245,7 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <h1 className='mt-4 text-center'>Glück auf, Kumpel*in!</h1>
+      <h1 className='mt-4 text-center'>Grün auf, Kumpel*in!</h1>
       <div className={styles.biennaleGallery}>
         <Image
           src='/gruenaufkumpelinLOGO.png'
@@ -263,16 +254,20 @@ export default function Home() {
           height={100}
         />
       </div>
-      <p
-        style={{
-          margin: "0 50px 50px 50px",
-        }}>
-        Schön, dass du in die Galerie deiner Erlebnisse und die deiner
-        Kumpel*innen. Du kannst dir die Bilder die in unserer VR-Umgebung
-        aufgenommen wurden anschauen, deine Liebsten herzen und wenn du magst
-        sogar kommentieren. Wir freuen uns eure Kommentare und Anregungen zu
-        lesen und freuen uns, dass du bei uns warst.
+      <div className="text-center">
+      <p className="mb-1">
+          Schön das Du da bist!
       </p>
+      <p className="mb-1">
+          Hier kannst Du alle aufgenommen Bilder aus unserer VR-Umgebung sehen.
+      </p>
+      <p className="mb-1">
+          Lass gerne ein Like da, oder schreibe Deine Gedanken nieder.
+      </p>
+      <p>
+          Vielen Dank für Deinen Besuch.
+      </p>
+      </div>
       <div className='text-center'>
         <ButtonGroup className='mb-3'>
           <ToggleButton
