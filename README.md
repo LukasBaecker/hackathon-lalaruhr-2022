@@ -5,7 +5,8 @@ We build a VR-experience where people are able to step into a virtual environmen
 
 ## Trailer
 
-Link to the trailer: ([](https://www.youtube.com/watch?v=P9LMF1a-4a0)) 
+Link to the trailer: [https://www.youtube.com/watch?v=P9LMF1a-4a0](https://www.youtube.com/watch?v=P9LMF1a-4a0) 
+
 ## Develop
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
